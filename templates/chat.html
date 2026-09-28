@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Flasky - Chatbot{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Chatbot</h1>
+    <p>Logged in as {{ name }}. Try "My name is Alice." then "What is my name?"</p>
+</div>
+
+<div id="chat-log" class="well" style="height: 300px; overflow-y: auto;"></div>
+
+<form id="chat-form" class="form-inline">
+    <input type="text" id="message" class="form-control" style="width: 70%;"
+           placeholder="Type a message..." autocomplete="off" required>
+    <button type="submit" id="send" class="btn btn-primary">Send</button>
+</form>
+
+<form action="{{ url_for('logout') }}" method="post" style="margin-top: 15px;">
+    <button type="submit" id="logout" class="btn btn-default">Logout</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    const log = document.getElementById('chat-log');
+    const input = document.getElementById('message');
+
+    function addLine(who, text, cls) {
+        const p = document.createElement('p');
+        p.className = cls;
+        const b = document.createElement('strong');
+        b.textContent = who + ': ';
+        p.appendChild(b);
+        p.appendChild(document.createTextNode(text));
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = input.value;
+        input.value = '';
+        addLine('You', message, 'user');
+        const res = await fetch('{{ url_for("chat") }}', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({message: message})
+        });
+        const data = await res.json();
+        addLine('Bot', data.reply, 'bot');
+    });
+</script>
+{% endblock %}

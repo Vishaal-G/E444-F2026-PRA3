@@ -30,3 +30,13 @@ docker ps -a
 App served from the container at http://localhost:5000:
 
 ![App running in Docker](screenshots/2.4-docker-uoft-email.png)
+
+## Activity 2.5 - Chatbot with memory (Flask session)
+
+The bot remembers facts across requests:
+
+![Chatbot remembers](screenshots/2.5-chat-remembers-name.png)
+
+After Logout the session is cleared, and the bot no longer remembers:
+
+![Chatbot forgot after logout](screenshots/2.5-chat-forgot-after-logout.png)
